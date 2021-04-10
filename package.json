@@ -1,9 +1,0 @@
-{
-  "name": "thrive",
-  "version": "0.0.0",
-  "description": "Spreadsheet software with focus on scalable scripting",
-  "main": "index.js",
-  "author": "Tobias Walle",
-  "license": "MIT",
-  "private": true
-}
