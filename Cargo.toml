@@ -4,7 +4,17 @@ version = "0.1.0"
 authors = ["Tobias Walle <git.tobias@walle.email>"]
 edition = "2018"
 
+[[bench]]
+name = "js_benchmark"
+harness = false
+
+[dev-dependencies]
+criterion = "0.3"
+
 [dependencies]
 alcro = "0.5.3"
 serde_json = "1.0.64"
 web-view = "0.7.3"
+anyhow = "1.0.40"
+thiserror = "1.0.24"
+tokio = { version = "1.4.0", features = ["rt", "process", "macros", "rt-multi-thread"] }
