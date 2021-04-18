@@ -10,6 +10,8 @@ harness = false
 
 [dev-dependencies]
 criterion = "0.3"
+pretty_assertions = "0.7.2"
+tokio-test = "0.4.1"
 
 [dependencies]
 alcro = "0.5.3"
