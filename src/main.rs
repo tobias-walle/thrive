@@ -2,5 +2,5 @@ use thrive::*;
 
 #[tokio::main]
 async fn main() {
-    app::start();
+    app::start().await.unwrap();
 }
