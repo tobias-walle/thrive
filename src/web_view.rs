@@ -1,8 +1,5 @@
-use std::fmt::format;
-
 use tokio::task;
-use tokio::time;
-use tokio::time::Duration;
+
 use web_view::*;
 
 pub async fn start(backend_address: &str) -> Result<(), anyhow::Error> {
