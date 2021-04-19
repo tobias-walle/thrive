@@ -2,13 +2,16 @@
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
+    "lib": ["DOM", "ESNext"],
     "strict": true,
     "noEmit": true,
+    "jsx": "react",
     "noUncheckedIndexedAccess": true,
     "noPropertyAccessFromIndexSignature": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
-  }
+  },
+  "include": ["src"]
 }
