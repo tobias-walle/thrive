@@ -1,0 +1,20 @@
+{
+  "name": "thrive-frontend",
+  "version": "0.1.0",
+  "main": "frontend/dist/index.html",
+  "repository": "git@github.com:TobiasWalle/thrive.git",
+  "author": "Tobias Walle <git.tobias@walle.email>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "parcel src/index.html",
+    "build": "parcel build src/index.html",
+    "fmt": "prettier --write .",
+    "check:types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "parcel": "^2.0.0-beta.2",
+    "prettier": "^2.2.1",
+    "typescript": "^4.2.4"
+  }
+}
