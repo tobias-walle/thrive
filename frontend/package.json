@@ -12,20 +12,26 @@
     "fmt": "prettier --write .",
     "check:types": "tsc --noEmit"
   },
+  "resolutions": {
+    "styled-components": "^5"
+  },
   "devDependencies": {
     "@babel/preset-react": "^7.13.13",
     "@babel/preset-typescript": "^7.13.0",
     "@trivago/prettier-plugin-sort-imports": "^2.0.2",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
-    "@types/styled-jsx": "^2.2.8",
+    "@types/styled-components": "^5.1.9",
+    "babel-plugin-styled-components": "^1.12.0",
     "parcel": "^2.0.0-beta.2",
     "prettier": "^2.2.1",
     "typescript": "^4.2.4"
   },
   "dependencies": {
+    "rambda": "^6.7.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "styled-jsx": "^3.4.4"
+    "styled-components": "^5.2.3",
+    "styled-reset": "^4.3.4"
   }
 }
