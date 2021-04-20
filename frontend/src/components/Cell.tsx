@@ -13,15 +13,19 @@ export function Cell(props: CellProps) {
   return <Wrapper cell={props}>{props.value}</Wrapper>
 }
 
-const Wrapper = styled.div<{ cell: CellProps }>`
+type WrapperProps = { cell: CellProps }
+const Wrapper = styled.div.attrs<WrapperProps>((p) => ({
+  style: {
+    left: p.cell.x,
+    top: p.cell.y,
+    width: p.cell.width,
+    height: p.cell.height,
+  },
+}))<WrapperProps>`
   position: absolute;
-  left: ${(p) => p.cell.x}px;
-  top: ${(p) => p.cell.y}px;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: ${(p) => p.cell.height}px;
-  width: ${(p) => p.cell.width}px;
   box-sizing: border-box;
   border-left: 1px solid black;
   border-top: 1px solid black;

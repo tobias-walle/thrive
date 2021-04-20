@@ -2,7 +2,7 @@ use actix_web::{get, App, HttpResponse, HttpServer, Result};
 
 #[get("/")]
 async fn index() -> Result<HttpResponse> {
-    let content = include_str!("../frontend/index.html");
+    let content = include_str!("../frontend/dist/index.html");
     Ok(HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
         .body(content))
