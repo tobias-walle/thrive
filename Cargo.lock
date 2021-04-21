@@ -2199,6 +2199,7 @@ dependencies = [
  "anyhow",
  "criterion",
  "futures",
+ "mime",
  "portpicker",
  "pretty_assertions",
  "serde_json",

@@ -23,3 +23,4 @@ actix-files = "0.5.0"
 tokio = { version = "1.4", features = ["rt", "process", "macros", "rt-multi-thread", "time"] }
 portpicker = "0.1.0"
 futures = "0.3.14"
+mime = "0.3.16"

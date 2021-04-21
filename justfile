@@ -1,6 +1,10 @@
+run:
+  just build-front
+  cargo run
+
 fix:
   just fmt-front
-  cargo fix --all-features
+  cargo fix --all-features --allow-staged --allow-dirty
   cargo fmt
 
 build:
