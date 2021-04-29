@@ -1,6 +1,4 @@
-use thrive::*;
-
 #[tokio::main]
 async fn main() {
-    app::start().await.unwrap();
+    thrive_app::start().await.unwrap();
 }
