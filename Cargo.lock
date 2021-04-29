@@ -2204,7 +2204,6 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "futures",
- "portpicker",
  "thiserror",
  "thrive-server",
  "tokio 1.4.0",
@@ -2218,6 +2217,7 @@ dependencies = [
  "anyhow",
  "criterion",
  "pretty_assertions",
+ "thiserror",
  "tokio 1.4.0",
  "tokio-test",
 ]
@@ -2229,6 +2229,7 @@ dependencies = [
  "actix-files",
  "actix-web",
  "anyhow",
+ "portpicker",
  "tokio 1.4.0",
 ]
 

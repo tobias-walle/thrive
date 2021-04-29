@@ -1,5 +1,5 @@
 use criterion::{criterion_group, criterion_main, Criterion};
-use thrive::js;
+use thrive_core::js;
 
 fn criterion_benchmark(c: &mut Criterion) {
     c.bench_function("js hello world", |b| {

@@ -2,6 +2,10 @@ run:
   just build-front
   cargo run
 
+dev:
+  (cd frontend && yarn && yarn dev) & \
+  cargo run -p thrive-server
+
 fix:
   just fmt-front
   cargo fix --all-features --allow-staged --allow-dirty
