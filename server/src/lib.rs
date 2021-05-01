@@ -5,7 +5,7 @@ use actix_web::{App, HttpServer};
 mod static_files;
 
 async fn start_server(address: &str) -> anyhow::Result<()> {
-    HttpServer::new(|| App::new().service(static_files::service))
+    HttpServer::new(|| App::new().service(static_files::service()))
         .bind(address)?
         .run()
         .await?;
@@ -69,3 +69,4 @@ pub async fn start(address: &ServerAddress) -> anyhow::Result<()> {
     .await??;
     Ok(())
 }
+

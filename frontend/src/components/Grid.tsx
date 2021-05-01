@@ -1,5 +1,5 @@
 import { range } from "rambda"
-import React, { useEffect, useLayoutEffect, useMemo, useRef } from "react"
+import React, { useMemo, useRef } from "react"
 import styled from "styled-components"
 
 import {

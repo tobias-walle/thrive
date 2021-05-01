@@ -3,8 +3,13 @@ run:
   cargo run -p thrive
 
 dev:
-  (cd frontend && yarn && yarn dev) & \
-  cargo run -p thrive-server
+  just dev-front & just dev-server
+
+dev-front:
+  cd frontend && yarn && yarn dev
+
+dev-server:
+  cargo watch -- cargo run -p thrive-server
 
 fix:
   just fmt-front

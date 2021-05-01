@@ -1,10 +1,9 @@
-use actix_web::{get, web, HttpResponse};
+use actix_web::{dev::HttpServiceFactory, get, web, HttpResponse};
 use include_dir::{include_dir, Dir};
 
 const STATIC_FILES: Dir = include_dir!("../frontend/dist");
 
-#[get("/{file_name}")]
-async fn service(web::Path(file_name): web::Path<String>) -> HttpResponse {
+fn serve_file(file_name: &str) -> HttpResponse {
     let file = match STATIC_FILES.get_file(&file_name) {
         Some(file) => file,
         None => return HttpResponse::NotFound().finish(),
@@ -21,3 +20,18 @@ async fn service(web::Path(file_name): web::Path<String>) -> HttpResponse {
 
     HttpResponse::Ok().content_type(content_type).body(content)
 }
+
+#[get("/")]
+fn serve_index() -> HttpResponse {
+    serve_file("index.html")
+}
+
+#[get("/{file_name}")]
+fn serve_other(web::Path(file_name): web::Path<String>) -> HttpResponse {
+    serve_file(&file_name)
+}
+
+pub fn service() -> impl HttpServiceFactory {
+    web::scope("").service(serve_index).service(serve_other)
+}
+
