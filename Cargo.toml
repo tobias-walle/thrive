@@ -1,13 +1,3 @@
-[package]
-name = "thrive"
-version = "0.1.0"
-authors = ["Tobias Walle <git.tobias@walle.email>"]
-edition = "2018"
-
 [workspace]
 members = ["crates/*"]
 resolver = "2"
-
-[dependencies]
-thrive-app = { path = "./crates/app" }
-tokio = { version = "1.4", features = ["rt", "rt-multi-thread", "macros"] }

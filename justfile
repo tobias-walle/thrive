@@ -1,6 +1,6 @@
 run:
   just build-front
-  cargo run
+  cargo run -p thrive
 
 dev:
   (cd frontend && yarn && yarn dev) & \

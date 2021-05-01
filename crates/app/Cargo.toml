@@ -1,5 +1,5 @@
 [package]
-name = "thrive-app"
+name = "thrive"
 version = "0.1.0"
 authors = ["Tobias Walle <git.tobias@walle.email>"]
 edition = "2018"
