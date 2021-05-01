@@ -23,4 +23,8 @@ build-front:
 fmt-front:
   cd frontend && \
   yarn fmt
-  
+ 
+# Check if dependencies are actually used
+udeps:
+  cargo +nightly udeps
+   
