@@ -1,18 +1,14 @@
-use std::fmt::{self};
+use std::fmt;
 
 use actix_web::{App, HttpServer};
 
+mod static_files;
+
 async fn start_server(address: &str) -> anyhow::Result<()> {
-    HttpServer::new(|| {
-        App::new().service(
-            actix_files::Files::new("/", "./frontend/dist")
-                .index_file("index.html")
-                .show_files_listing(),
-        )
-    })
-    .bind(address)?
-    .run()
-    .await?;
+    HttpServer::new(|| App::new().service(static_files::service))
+        .bind(address)?
+        .run()
+        .await?;
     Ok(())
 }
 
@@ -21,6 +17,25 @@ pub struct ServerAddress {
     pub protocol: String,
     pub host: String,
     pub port: u16,
+}
+
+impl Default for ServerAddress {
+    fn default() -> Self {
+        ServerAddress {
+            protocol: "http".to_string(),
+            host: "localhost".to_string(),
+            port: 10000,
+        }
+    }
+}
+
+impl ServerAddress {
+    pub fn from_port(port: u16) -> ServerAddress {
+        ServerAddress {
+            port,
+            ..Default::default()
+        }
+    }
 }
 
 impl fmt::Display for ServerAddress {
@@ -41,11 +56,7 @@ impl ServerAddress {
 
 pub fn find_available_address() -> ServerAddress {
     let port = portpicker::pick_unused_port().expect("Couldn't find a free port.");
-    ServerAddress {
-        protocol: "http".to_string(),
-        host: "127.0.0.1".to_string(),
-        port,
-    }
+    ServerAddress::from_port(port)
 }
 
 pub async fn start(address: &ServerAddress) -> anyhow::Result<()> {

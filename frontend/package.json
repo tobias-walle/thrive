@@ -1,7 +1,7 @@
 {
   "name": "thrive-frontend",
   "version": "0.1.0",
-  "main": "frontend/dist/index.html",
+  "main": "dist/index.html",
   "repository": "git@github.com:TobiasWalle/thrive.git",
   "author": "Tobias Walle <git.tobias@walle.email>",
   "license": "MIT",

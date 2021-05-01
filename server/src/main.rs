@@ -1,8 +1,8 @@
-use thrive_server::{find_available_address, start};
+use thrive_server::{start, ServerAddress};
 
 #[tokio::main]
 async fn main() {
-    let address = find_available_address();
-    println!("Start Server on {}...", &address);
+    let address = ServerAddress::from_port(10000);
+    println!("Start Server on {}...", address);
     start(&address).await.unwrap();
 }
