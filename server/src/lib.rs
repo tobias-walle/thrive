@@ -69,4 +69,3 @@ pub async fn start(address: &ServerAddress) -> anyhow::Result<()> {
     .await??;
     Ok(())
 }
-

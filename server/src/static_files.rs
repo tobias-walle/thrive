@@ -34,4 +34,3 @@ fn serve_other(web::Path(file_name): web::Path<String>) -> HttpResponse {
 pub fn service() -> impl HttpServiceFactory {
     web::scope("").service(serve_index).service(serve_other)
 }
-
