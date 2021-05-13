@@ -1,5 +1,3 @@
-use std::thread;
-
 mod web_view;
 
 pub async fn start() -> anyhow::Result<()> {
