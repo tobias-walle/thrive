@@ -1,14 +1,19 @@
 use std::fmt;
 
-use actix_web::{App, HttpServer};
+use actix_web::{web, App, HttpServer};
 
 mod static_files;
+mod ws;
 
 async fn start_server(address: &str) -> anyhow::Result<()> {
-    HttpServer::new(|| App::new().service(static_files::service()))
-        .bind(address)?
-        .run()
-        .await?;
+    HttpServer::new(|| {
+        App::new()
+            .route("/ws", web::get().to(ws::index))
+            .service(static_files::service())
+    })
+    .bind(address)?
+    .run()
+    .await?;
     Ok(())
 }
 

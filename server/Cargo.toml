@@ -5,8 +5,9 @@ authors = ["Tobias Walle <git.tobias@walle.email>"]
 edition = "2018"
 
 [dependencies]
+actix = "0.10"
 actix-web = "3"
-actix-files = "0.5"
+actix-web-actors = "3"
 tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros"] }
 anyhow = "1"
 portpicker = "0.1"
