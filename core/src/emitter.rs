@@ -1,18 +1,13 @@
-use std::sync::{Mutex, Weak};
+use std::{
+    fmt::Debug,
+    sync::{Mutex, Weak},
+};
 
-pub trait Handler<E> {
+pub trait Handler<E>: Debug {
     fn handle(&mut self, event: &E);
 }
 
-impl<F, E> Handler<E> for F
-where
-    F: FnMut(&E),
-{
-    fn handle(&mut self, event: &E) {
-        self(event)
-    }
-}
-
+#[derive(Debug)]
 pub struct Emitter<'a, E> {
     pub handlers: Vec<Weak<Mutex<dyn Handler<E> + 'a>>>,
 }
@@ -52,14 +47,21 @@ impl<E> Default for Emitter<'_, E> {
     }
 }
 
-pub trait Subscribable<'a, E> {
-    fn emitter(&mut self) -> &mut Emitter<'a, E>;
+pub trait Subscribable<'a> {
+    type Event;
+    fn subscribe<H>(&mut self, handler: Weak<Mutex<H>>)
+    where
+        H: Handler<Self::Event> + 'a;
+}
+
+impl<'a, E> Subscribable<'a> for Emitter<'a, E> {
+    type Event = E;
 
     fn subscribe<H>(&mut self, handler: Weak<Mutex<H>>)
     where
         H: Handler<E> + 'a,
     {
-        self.emitter().subscribe(handler)
+        self.subscribe(handler)
     }
 }
 
@@ -69,6 +71,7 @@ mod tests {
 
     use super::*;
 
+    #[derive(Debug)]
     struct Counter {
         value: i32,
     }

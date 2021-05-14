@@ -6,6 +6,7 @@ use crate::{
     sheet::Sheet,
 };
 
+#[derive(Debug)]
 pub struct State<'a> {
     emitter: Emitter<'a, Event>,
     pub sheet: Sheet,
@@ -17,6 +18,10 @@ impl<'a> State<'a> {
             emitter: Emitter::new(),
             sheet: Sheet::new(),
         }
+    }
+
+    pub fn subscribable(&mut self) -> &mut impl Subscribable<'a> {
+        &mut self.emitter
     }
 
     pub fn apply_command(&mut self, command: Command) -> Result<()> {
@@ -36,11 +41,5 @@ impl<'a> State<'a> {
 impl Default for State<'_> {
     fn default() -> Self {
         Self::new()
-    }
-}
-
-impl<'a> Subscribable<'a, Event> for State<'a> {
-    fn emitter(&mut self) -> &mut Emitter<'a, Event> {
-        &mut self.emitter
     }
 }
