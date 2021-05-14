@@ -5,6 +5,7 @@ authors = ["Tobias Walle <git.tobias@walle.email>"]
 edition = "2018"
 
 [dependencies]
+thrive-core = { path = "../core" }
 actix = "0.10"
 actix-web = "3"
 actix-web-actors = "3"
@@ -14,3 +15,5 @@ portpicker = "0.1"
 include_dir = "0.6"
 mime_guess = "2"
 mime = "0.3"
+log = "0.4"
+pretty_env_logger = "0.4"

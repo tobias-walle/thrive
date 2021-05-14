@@ -1,8 +1,13 @@
+use std::sync::{Arc, Mutex};
+
 use actix::{Actor, StreamHandler};
 use actix_web::{web, Error, HttpRequest, HttpResponse};
 use actix_web_actors::ws;
+use thrive_core::state::State;
 
-struct Websocket;
+struct Websocket {
+    state: web::Data<Mutex<State<'static>>>,
+}
 
 impl Actor for Websocket {
     type Context = ws::WebsocketContext<Self>;
@@ -28,8 +33,13 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for Websocket {
     }
 }
 
-pub async fn index(req: HttpRequest, stream: web::Payload) -> Result<HttpResponse, Error> {
-    let response = ws::start(Websocket {}, &req, stream);
+pub async fn index(
+    req: HttpRequest,
+    stream: web::Payload,
+    state: web::Data<Mutex<State<'static>>>,
+) -> Result<HttpResponse, Error> {
+    dbg!(&state);
+    let response = ws::start(Websocket { state }, &req, stream);
     dbg!(&response);
     response
 }

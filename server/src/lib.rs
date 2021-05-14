@@ -1,21 +1,10 @@
-use std::fmt;
+use std::{fmt, sync::Mutex};
 
 use actix_web::{web, App, HttpServer};
+use thrive_core::state::State;
 
 mod static_files;
 mod ws;
-
-async fn start_server(address: &str) -> anyhow::Result<()> {
-    HttpServer::new(|| {
-        App::new()
-            .route("/ws", web::get().to(ws::index))
-            .service(static_files::service())
-    })
-    .bind(address)?
-    .run()
-    .await?;
-    Ok(())
-}
 
 #[derive(Debug)]
 pub struct ServerAddress {
@@ -62,6 +51,19 @@ impl ServerAddress {
 pub fn find_available_address() -> ServerAddress {
     let port = portpicker::pick_unused_port().expect("Couldn't find a free port.");
     ServerAddress::from_port(port)
+}
+
+async fn start_server(address: &str) -> anyhow::Result<()> {
+    HttpServer::new(|| {
+        App::new()
+            .data(Mutex::new(State::new()))
+            .route("/ws", web::get().to(ws::index))
+            .service(static_files::service())
+    })
+    .bind(address)?
+    .run()
+    .await?;
+    Ok(())
 }
 
 pub async fn start(address: &ServerAddress) -> anyhow::Result<()> {

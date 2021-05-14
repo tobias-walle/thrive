@@ -3,7 +3,7 @@ use std::{
     sync::{Mutex, Weak},
 };
 
-pub trait Handler<E>: Debug {
+pub trait Handler<E>: Send + Debug {
     fn handle(&mut self, event: &E);
 }
 
