@@ -11,6 +11,9 @@ dev-front:
 dev-server:
   cargo watch -- cargo run -p thrive-server
 
+check:
+  cargo watch -- cargo check
+
 fix:
   just fmt-front
   cargo fix --all-features --allow-staged --allow-dirty

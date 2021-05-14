@@ -1,5 +1,6 @@
 use derive_more::Display;
 use nanoid::nanoid;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 use crate::error::{Error, Result};
@@ -10,19 +11,21 @@ pub struct Position {
     col: i32,
 }
 
+#[derive(Debug, Clone, PartialEq, Hash, Eq, Display, Serialize, Deserialize)]
+pub struct CellId(#[display] String);
+
 #[derive(Debug, Clone)]
 pub struct Cell {
-    value: String,
+    text: String,
 }
 
 impl Cell {
     pub fn new() -> Self {
-        Self { value: "".into() }
+        Self {
+            text: "".to_string(),
+        }
     }
 }
-
-#[derive(Debug, Clone, PartialEq, Hash, Eq, Display)]
-pub struct CellId(#[display] String);
 
 impl CellId {
     fn new(id: String) -> Self {
@@ -55,16 +58,16 @@ impl Sheet {
         id
     }
 
-    pub fn get_cell_value(&self, id: &CellId) -> Option<&str> {
-        Some(&self.cells_by_id.get(id)?.value)
+    pub fn get_cell_text(&self, id: &CellId) -> Option<&str> {
+        Some(&self.cells_by_id.get(id)?.text)
     }
 
-    pub fn set_cell_value(&mut self, id: &CellId, value: String) -> Result<()> {
+    pub fn set_cell_text(&mut self, id: &CellId, text: String) -> Result<()> {
         let mut cell = self
             .cells_by_id
             .get_mut(id)
             .ok_or(Error::CellIdNotFound(id.clone()))?;
-        cell.value = value;
+        cell.text = text;
         Ok(())
     }
 }
@@ -80,10 +83,10 @@ mod tests {
         let c1 = sheet.create_cell();
         let c2 = sheet.create_cell();
 
-        sheet.set_cell_value(&c2, "1 + 1".into()).unwrap();
+        sheet.set_cell_text(&c2, "1 + 1".into()).unwrap();
 
-        assert_eq!(sheet.get_cell_value(&c1), Some(""));
-        assert_eq!(sheet.get_cell_value(&c2), Some("1 + 1"));
-        assert_eq!(sheet.get_cell_value(&CellId::random()), None);
+        assert_eq!(sheet.get_cell_text(&c1), Some(""));
+        assert_eq!(sheet.get_cell_text(&c2), Some("1 + 1"));
+        assert_eq!(sheet.get_cell_text(&CellId::random()), None);
     }
 }
