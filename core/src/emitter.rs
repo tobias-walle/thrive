@@ -1,15 +1,15 @@
 use std::{
     fmt::Debug,
-    sync::{Mutex, Weak},
+    sync::{RwLock, Weak},
 };
 
-pub trait Handler<E>: Send + Debug {
+pub trait Handler<E>: Send + Sync + Debug {
     fn handle(&mut self, event: &E);
 }
 
 #[derive(Debug)]
 pub struct Emitter<E> {
-    pub handlers: Vec<Weak<Mutex<dyn Handler<E>>>>,
+    pub handlers: Vec<Weak<RwLock<dyn Handler<E>>>>,
 }
 
 impl<E> Emitter<E> {
@@ -19,7 +19,7 @@ impl<E> Emitter<E> {
         }
     }
 
-    pub fn subscribe<H>(&mut self, handler: Weak<Mutex<H>>)
+    pub fn subscribe<H>(&mut self, handler: Weak<RwLock<H>>)
     where
         H: Handler<E> + 'static,
     {
@@ -30,7 +30,7 @@ impl<E> Emitter<E> {
         self.handlers.retain(|handler| match handler.upgrade() {
             Some(handler) => {
                 // Handler still exists, call and keep in vector
-                handler.lock().unwrap().handle(&event);
+                handler.write().unwrap().handle(&event);
                 true
             }
             None => {
@@ -49,7 +49,7 @@ impl<E> Default for Emitter<E> {
 
 pub trait Subscribable {
     type Event;
-    fn subscribe<H>(&mut self, handler: Weak<Mutex<H>>)
+    fn subscribe<H>(&mut self, handler: Weak<RwLock<H>>)
     where
         H: Handler<Self::Event> + 'static;
 }
@@ -57,7 +57,7 @@ pub trait Subscribable {
 impl<E> Subscribable for Emitter<E> {
     type Event = E;
 
-    fn subscribe<H>(&mut self, handler: Weak<Mutex<H>>)
+    fn subscribe<H>(&mut self, handler: Weak<RwLock<H>>)
     where
         H: Handler<E> + 'static,
     {
@@ -85,20 +85,20 @@ mod tests {
     #[test]
     fn should_register_handler_and_notify_about_events() {
         let mut emitter = Emitter::<i32>::new();
-        let counter = Arc::new(Mutex::new(Counter { value: 0 }));
+        let counter = Arc::new(RwLock::new(Counter { value: 0 }));
 
         emitter.subscribe(Arc::downgrade(&counter));
         emitter.emit(10);
         emitter.emit(20);
 
-        assert_eq!(counter.lock().unwrap().value, 30);
+        assert_eq!(counter.read().unwrap().value, 30);
     }
 
     #[test]
     fn should_not_panic_if_handle_was_dropped() {
         let mut emitter = Emitter::<i32>::new();
         {
-            let counter = Arc::new(Mutex::new(Counter { value: 0 }));
+            let counter = Arc::new(RwLock::new(Counter { value: 0 }));
             emitter.subscribe(Arc::downgrade(&counter));
         }
         emitter.emit(10);

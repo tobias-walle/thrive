@@ -1,12 +1,12 @@
-use std::sync::Mutex;
-
 use actix::{Actor, StreamHandler};
 use actix_web::{web, Error, HttpRequest, HttpResponse};
 use actix_web_actors::ws;
-use thrive_core::state::State;
+use thrive_core::command::Command;
+
+use crate::ServerState;
 
 struct Websocket {
-    state: web::Data<Mutex<State>>,
+    state: web::Data<ServerState>,
 }
 
 impl Actor for Websocket {
@@ -26,8 +26,19 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for Websocket {
         dbg!(&msg);
         match msg {
             Ok(ws::Message::Ping(msg)) => ctx.pong(&msg),
-            Ok(ws::Message::Text(text)) => ctx.text(text),
-            Ok(ws::Message::Binary(bin)) => ctx.binary(bin),
+            Ok(ws::Message::Text(text)) => {
+                match serde_json::from_str::<Command>(&text) {
+                    Ok(command) => {
+                        self.state
+                            .write()
+                            .unwrap()
+                            .apply_command(command)
+                            .expect("Couldn't apply command.");
+                    }
+                    Err(err) => log::warn!("Couln't parse incoming message: {}", err),
+                };
+                ctx.text(text)
+            }
             _ => (),
         }
     }
@@ -36,9 +47,8 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for Websocket {
 pub async fn index(
     req: HttpRequest,
     stream: web::Payload,
-    state: web::Data<Mutex<State>>,
+    state: web::Data<ServerState>,
 ) -> Result<HttpResponse, Error> {
-    dbg!(&state);
     let response = ws::start(Websocket { state }, &req, stream);
     dbg!(&response);
     response

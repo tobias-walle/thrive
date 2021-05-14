@@ -1,5 +1,6 @@
 use derive_more::Display;
 use nanoid::nanoid;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -11,7 +12,7 @@ pub struct Position {
     col: i32,
 }
 
-#[derive(Debug, Clone, PartialEq, Hash, Eq, Display, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Hash, Eq, Display, Serialize, Deserialize, JsonSchema)]
 pub struct CellId(#[display] String);
 
 #[derive(Debug, Clone)]
