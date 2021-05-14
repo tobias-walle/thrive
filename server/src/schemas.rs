@@ -1,4 +1,4 @@
-use actix_web::{get, HttpResponse, Responder};
+use actix_web::{get, HttpResponse};
 use schemars::schema_for;
 use thrive_core::{command::Command, event::Event};
 
