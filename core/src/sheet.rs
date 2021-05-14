@@ -27,6 +27,12 @@ impl Cell {
     }
 }
 
+impl Default for Cell {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl CellId {
     fn new(id: String) -> Self {
         Self(id)
@@ -66,9 +72,15 @@ impl Sheet {
         let mut cell = self
             .cells_by_id
             .get_mut(id)
-            .ok_or(Error::CellIdNotFound(id.clone()))?;
+            .ok_or_else(|| Error::CellIdNotFound(id.clone()))?;
         cell.text = text;
         Ok(())
+    }
+}
+
+impl Default for Sheet {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

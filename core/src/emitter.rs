@@ -1,0 +1,106 @@
+use std::sync::{Mutex, Weak};
+
+pub trait Handler<E> {
+    fn handle(&mut self, event: &E);
+}
+
+impl<F, E> Handler<E> for F
+where
+    F: FnMut(&E),
+{
+    fn handle(&mut self, event: &E) {
+        self(event)
+    }
+}
+
+pub struct Emitter<'a, E> {
+    pub handlers: Vec<Weak<Mutex<dyn Handler<E> + 'a>>>,
+}
+
+impl<'a, E> Emitter<'a, E> {
+    pub fn new() -> Self {
+        Self {
+            handlers: Vec::new(),
+        }
+    }
+
+    pub fn subscribe<H>(&mut self, handler: Weak<Mutex<H>>)
+    where
+        H: Handler<E> + 'a,
+    {
+        self.handlers.push(handler);
+    }
+
+    pub fn emit(&mut self, event: E) {
+        self.handlers.retain(|handler| match handler.upgrade() {
+            Some(handler) => {
+                // Handler still exists, call and keep in vector
+                handler.lock().unwrap().handle(&event);
+                true
+            }
+            None => {
+                // Handler doesn't exists anymore, remove from vector
+                false
+            }
+        });
+    }
+}
+
+impl<E> Default for Emitter<'_, E> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+pub trait Subscribable<'a, E> {
+    fn emitter(&mut self) -> &mut Emitter<'a, E>;
+
+    fn subscribe<H>(&mut self, handler: Weak<Mutex<H>>)
+    where
+        H: Handler<E> + 'a,
+    {
+        self.emitter().subscribe(handler)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::sync::Arc;
+
+    use super::*;
+
+    struct Counter {
+        value: i32,
+    }
+
+    impl Handler<i32> for Counter {
+        fn handle(&mut self, event: &i32) {
+            self.value += event;
+        }
+    }
+
+    #[test]
+    fn should_register_handler_and_notify_about_events() {
+        let mut emitter = Emitter::<i32>::new();
+        let counter = Arc::new(Mutex::new(Counter { value: 0 }));
+
+        emitter.subscribe(Arc::downgrade(&counter));
+        emitter.emit(10);
+        emitter.emit(20);
+
+        assert_eq!(counter.lock().unwrap().value, 30);
+    }
+
+    #[test]
+    fn should_not_panic_if_handle_was_dropped() {
+        let mut emitter = Emitter::<i32>::new();
+        {
+            let counter = Arc::new(Mutex::new(Counter { value: 0 }));
+            emitter.subscribe(Arc::downgrade(&counter));
+        }
+        emitter.emit(10);
+
+        // Handler should be removed
+        assert_eq!(emitter.handlers.len(), 0);
+    }
+}
