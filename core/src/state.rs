@@ -7,12 +7,12 @@ use crate::{
 };
 
 #[derive(Debug)]
-pub struct State<'a> {
-    emitter: Emitter<'a, Event>,
+pub struct State {
+    emitter: Emitter<Event>,
     pub sheet: Sheet,
 }
 
-impl<'a> State<'a> {
+impl State {
     pub fn new() -> Self {
         Self {
             emitter: Emitter::new(),
@@ -20,7 +20,7 @@ impl<'a> State<'a> {
         }
     }
 
-    pub fn subscribable(&mut self) -> &mut impl Subscribable<'a> {
+    pub fn subscribable(&mut self) -> &mut impl Subscribable {
         &mut self.emitter
     }
 
@@ -38,7 +38,7 @@ impl<'a> State<'a> {
     }
 }
 
-impl Default for State<'_> {
+impl Default for State {
     fn default() -> Self {
         Self::new()
     }

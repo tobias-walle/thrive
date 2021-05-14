@@ -11,12 +11,16 @@ dev-front:
 dev-server:
   cargo watch -- cargo run -p thrive-server
 
-check:
-  cargo watch -- cargo check
+clippy:
+  cargo watch -- cargo clippy
 
 fix:
   just fmt-front
+  just fix-server
+
+fix-server:
   cargo fix --all-features --allow-staged --allow-dirty
+  cargo +nightly clippy --fix -Z unstable-options --allow-staged --allow-dirty
   cargo fmt
 
 build:

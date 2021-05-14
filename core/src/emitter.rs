@@ -8,11 +8,11 @@ pub trait Handler<E>: Send + Debug {
 }
 
 #[derive(Debug)]
-pub struct Emitter<'a, E> {
-    pub handlers: Vec<Weak<Mutex<dyn Handler<E> + 'a>>>,
+pub struct Emitter<E> {
+    pub handlers: Vec<Weak<Mutex<dyn Handler<E>>>>,
 }
 
-impl<'a, E> Emitter<'a, E> {
+impl<E> Emitter<E> {
     pub fn new() -> Self {
         Self {
             handlers: Vec::new(),
@@ -21,7 +21,7 @@ impl<'a, E> Emitter<'a, E> {
 
     pub fn subscribe<H>(&mut self, handler: Weak<Mutex<H>>)
     where
-        H: Handler<E> + 'a,
+        H: Handler<E> + 'static,
     {
         self.handlers.push(handler);
     }
@@ -41,25 +41,25 @@ impl<'a, E> Emitter<'a, E> {
     }
 }
 
-impl<E> Default for Emitter<'_, E> {
+impl<E> Default for Emitter<E> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-pub trait Subscribable<'a> {
+pub trait Subscribable {
     type Event;
     fn subscribe<H>(&mut self, handler: Weak<Mutex<H>>)
     where
-        H: Handler<Self::Event> + 'a;
+        H: Handler<Self::Event> + 'static;
 }
 
-impl<'a, E> Subscribable<'a> for Emitter<'a, E> {
+impl<E> Subscribable for Emitter<E> {
     type Event = E;
 
     fn subscribe<H>(&mut self, handler: Weak<Mutex<H>>)
     where
-        H: Handler<E> + 'a,
+        H: Handler<E> + 'static,
     {
         self.subscribe(handler)
     }
