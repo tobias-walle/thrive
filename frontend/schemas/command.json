@@ -1,19 +1,14 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Event",
+  "title": "Command",
   "anyOf": [
     {
       "type": "object",
-      "required": [
-        "cellTextChanged"
-      ],
+      "required": ["changeCellText"],
       "properties": {
-        "cellTextChanged": {
+        "changeCellText": {
           "type": "object",
-          "required": [
-            "id",
-            "text"
-          ],
+          "required": ["id", "text"],
           "properties": {
             "id": {
               "$ref": "#/definitions/CellId"

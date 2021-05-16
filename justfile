@@ -41,4 +41,4 @@ udeps:
   cargo +nightly udeps
    
 generate-schemas:
-  cargo run --package thrive-core --bin generate-json-schemas
+  cargo run --package thrive-core --bin generate-json-schemas -- ./frontend/schemas

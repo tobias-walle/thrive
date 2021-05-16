@@ -1,10 +1,16 @@
-use std::{env, fs};
+use std::{fs, path::Path};
 
+use clap::{App, Arg};
 use schemars::schema_for;
 
 fn main() {
     color_backtrace::install();
-    generate_schemas();
+    let args = App::new("generate-json-schema")
+        .arg(Arg::from_usage(
+            "<schemas-dir> 'In which directory should the schema be generated'",
+        ))
+        .get_matches();
+    generate_schemas(args.value_of("schemas-dir").unwrap());
 }
 
 macro_rules! save_schema_for {
@@ -16,11 +22,10 @@ macro_rules! save_schema_for {
     };
 }
 
-fn generate_schemas() {
-    let current_dir = env::current_dir().unwrap();
-    let schemas_dir = current_dir.join("schemas");
+fn generate_schemas(schemas_dir: &str) {
+    let schemas_dir: &Path = schemas_dir.as_ref();
     println!("Ensure output directory {:?}", schemas_dir);
-    fs::remove_dir_all(&schemas_dir).unwrap();
+    let _ = fs::remove_dir_all(&schemas_dir);
     fs::create_dir_all(&schemas_dir).unwrap();
     save_schema_for!(
         thrive_core::command::Command,
