@@ -2499,7 +2499,6 @@ dependencies = [
  "mime_guess",
  "portpicker",
  "pretty_env_logger",
- "schemars",
  "serde_json",
  "thrive-core",
  "tokio 1.4.0",

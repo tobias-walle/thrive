@@ -1,12 +1,10 @@
 use actix_web::{web, App, HttpServer};
 use derive_more::{Deref, DerefMut};
-use schemas::{serve_command_schema, serve_event_schema};
 use std::sync::RwLock;
 use thrive_core::state::State;
 
 pub use server_address::*;
 
-mod schemas;
 mod static_files;
 mod ws;
 
@@ -25,11 +23,6 @@ async fn start_server(address: &str) -> anyhow::Result<()> {
     HttpServer::new(|| {
         App::new()
             .data(ServerState::new())
-            .service(
-                web::scope("/schema")
-                    .service(serve_command_schema)
-                    .service(serve_event_schema),
-            )
             .route("/ws", web::get().to(ws::index))
             .service(static_files::service())
     })
