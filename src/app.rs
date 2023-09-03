@@ -1,24 +1,16 @@
-use leptos::leptos_dom::ev::{SubmitEvent};
+use leptos::leptos_dom::ev::SubmitEvent;
 use leptos::*;
-use serde::{Deserialize, Serialize};
-use serde_wasm_bindgen::to_value;
-use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_namespace = ["window", "__TAURI__", "tauri"])]
-    async fn invoke(cmd: &str, args: JsValue) -> JsValue;
-}
-
-#[derive(Serialize, Deserialize)]
-struct GreetArgs<'a> {
-    name: &'a str,
-}
+use crate::tauri;
 
 #[component]
 pub fn App(cx: Scope) -> impl IntoView {
     let (name, set_name) = create_signal(cx, String::new());
     let (greet_msg, set_greet_msg) = create_signal(cx, String::new());
+
+    create_effect(cx, move |_| {
+        log!("Hello Name: {}", name.get());
+    });
 
     let update_name = move |ev| {
         let v = event_target_value(&ev);
@@ -27,15 +19,13 @@ pub fn App(cx: Scope) -> impl IntoView {
 
     let greet = move |ev: SubmitEvent| {
         ev.prevent_default();
+        let name = name.get();
         spawn_local(async move {
-            if name.get().is_empty() {
+            if name.is_empty() {
                 return;
             }
 
-            let args = to_value(&GreetArgs { name: &name.get() }).unwrap();
-            // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-            let new_msg = invoke("greet", args).await.as_string().unwrap();
-            set_greet_msg.set(new_msg);
+            set_greet_msg.set(tauri::api::greet(name).await);
         });
     };
 
@@ -51,15 +41,6 @@ pub fn App(cx: Scope) -> impl IntoView {
             </div>
 
             <p>"Click on the Tauri and Leptos logos to learn more."</p>
-
-            <p>
-                "Recommended IDE setup: "
-                <a href="https://code.visualstudio.com/" target="_blank">"VS Code"</a>
-                " + "
-                <a href="https://github.com/tauri-apps/tauri-vscode" target="_blank">"Tauri"</a>
-                " + "
-                <a href="https://github.com/rust-lang/rust-analyzer" target="_blank">"rust-analyzer"</a>
-            </p>
 
             <form class="row" on:submit=greet>
                 <input

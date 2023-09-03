@@ -1,4 +1,5 @@
 mod app;
+mod tauri;
 
 use app::*;
 use leptos::*;
