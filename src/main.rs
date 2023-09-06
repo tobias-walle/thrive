@@ -1,6 +1,7 @@
 mod app;
 mod components;
 mod tauri;
+mod utils;
 
 use app::*;
 use leptos::*;

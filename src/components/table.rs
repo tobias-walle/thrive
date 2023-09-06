@@ -1,49 +1,41 @@
+use shared::{Coordinate, TableCell};
 use std::collections::HashMap;
 
 use leptos::{ev::Event, *};
 
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Default)]
-struct Coordinate {
-    row: i64,
-    col: i64,
-}
-
-#[derive(Debug, Clone, Default)]
-struct Cell {
-    coord: Coordinate,
-    text: String,
-}
+use crate::{debug, tauri};
 
 #[component]
 pub fn Table(cx: Scope) -> impl IntoView {
-    let (coords, set_coords) = create_signal(
+    let (coords, _set_coords) = create_signal(
         cx,
-        (0..100)
-            .flat_map(|row| (0..100).map(move |col| Coordinate { row, col }))
+        (0..10)
+            .flat_map(|row| (0..10).map(move |col| Coordinate { row, col }))
             .collect::<Vec<_>>(),
     );
-    let (cells, set_cells) = create_signal(cx, HashMap::<Coordinate, Cell>::new());
+    let (cells, set_cells) = create_signal(cx, HashMap::<Coordinate, TableCell>::new());
 
-    let get_cell = move |coord: &Coordinate| {
-        cells
-            .get()
-            .get(coord)
-            .map(|coord| coord.to_owned())
-            .unwrap_or_else(|| Cell {
-                coord: coord.clone(),
-                ..Default::default()
-            })
+    let get_cell = move |coord: &Coordinate| match cells.get().get(coord) {
+        Some(cell) => cell.to_owned(),
+        None => TableCell {
+            coord: coord.to_owned(),
+            ..Default::default()
+        },
     };
 
-    let update_cell_text = move |coord: &Coordinate, cell: &Cell, event: &Event| {
+    let update_cell_text = move |coord: Coordinate, cell: &TableCell, event: &Event| {
+        let new_cell = TableCell {
+            text: event_target_value(event),
+            ..cell.clone()
+        };
         set_cells.update(|cells| {
-            cells.insert(
-                coord.clone(),
-                Cell {
-                    text: event_target_value(event),
-                    ..cell.clone()
-                },
-            );
+            cells.insert(coord, new_cell.clone());
+        });
+        spawn_local(async move {
+            let new_cell_with_computed = tauri::api::compute(new_cell).await;
+            set_cells.update(|cells| {
+                cells.insert(coord, new_cell_with_computed);
+            });
         });
     };
 
@@ -55,9 +47,10 @@ pub fn Table(cx: Scope) -> impl IntoView {
         <div class="m-0 relative">
             <For
                 each=move || coords.get()
-                key=|coord| coord.clone()
+                key=|coord| *coord
                 view=move |cx, coord: Coordinate| {
                     let cell = get_cell(&coord);
+                    let (focused, set_focused) = create_signal(cx, false);
                     view! {
                         cx,
                         <div
@@ -70,8 +63,16 @@ pub fn Table(cx: Scope) -> impl IntoView {
                         >
                             <input
                                 class="w-full h-full p-1 focus:outline focus:outline-cyan-500 focus:outline-[2px] rounded-none"
-                                prop:value=&cell.text
-                                on:input=move |event| update_cell_text(&coord, &cell, &event)
+                                prop:value=move || {
+                                    let cell = get_cell(&coord);
+                                    match focused.get() {
+                                        true => cell.text.clone(),
+                                        false => cell.computed.clone(),
+                                    }
+                                }
+                                on:input=move |event| update_cell_text(coord, &cell, &event)
+                                on:focus=move |_| set_focused.set(true)
+                                on:blur=move |_| set_focused.set(false)
                             />
                         </div>
                 }

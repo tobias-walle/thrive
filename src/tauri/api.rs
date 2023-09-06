@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use serde_wasm_bindgen::to_value;
+use shared::TableCell;
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
 #[wasm_bindgen]
@@ -9,11 +10,12 @@ extern "C" {
 }
 
 #[derive(Serialize, Deserialize)]
-struct GreetArgs {
-    name: String,
+struct ComputeArgs {
+    cell: TableCell,
 }
 
-pub async fn greet(name: String) -> String {
-    let args = to_value(&GreetArgs { name }).unwrap();
-    invoke("greet", args).await.as_string().unwrap()
+pub async fn compute(cell: TableCell) -> TableCell {
+    let args = to_value(&ComputeArgs { cell }).unwrap();
+    let result = invoke("compute", args).await;
+    serde_wasm_bindgen::from_value(result).unwrap()
 }
