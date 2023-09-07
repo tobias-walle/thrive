@@ -1,6 +1,5 @@
-use leptos::*;
-
-use crate::components::*;
+use crate::components::Table;
+use crate::prelude::*;
 
 #[component]
 pub fn App(cx: Scope) -> impl IntoView {

@@ -1,9 +1,9 @@
+use leptos::ev::Event;
 use shared::{Coordinate, TableCell};
 use std::collections::HashMap;
 
-use leptos::{ev::Event, *};
-
-use crate::{debug, tauri};
+use crate::prelude::*;
+use crate::tauri;
 
 #[component]
 pub fn Table(cx: Scope) -> impl IntoView {
@@ -16,9 +16,9 @@ pub fn Table(cx: Scope) -> impl IntoView {
     let (cells, set_cells) = create_signal(cx, HashMap::<Coordinate, TableCell>::new());
 
     let get_cell = move |coord: &Coordinate| match cells.get().get(coord) {
-        Some(cell) => cell.to_owned(),
+        Some(cell) => cell.clone(),
         None => TableCell {
-            coord: coord.to_owned(),
+            coord: *coord,
             ..Default::default()
         },
     };

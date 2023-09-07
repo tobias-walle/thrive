@@ -1,3 +1,5 @@
+#![warn(clippy::pedantic)]
+
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, Default, Hash, PartialEq, Eq)]
@@ -14,10 +16,12 @@ pub struct TableCell {
 }
 
 impl TableCell {
+    #[must_use]
     pub fn has_formula(&self) -> bool {
         self.text.starts_with('=')
     }
 
+    #[must_use]
     pub fn get_formula(&self) -> Option<&str> {
         if self.has_formula() {
             Some(&self.text[1..])
