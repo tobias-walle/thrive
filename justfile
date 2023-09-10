@@ -16,3 +16,10 @@ fix:
   cargo clippy --all --fix --allow-staged
   cargo fmt
 
+# Run the tests of all workspaces
+test:
+  cargo test --all
+
+# Run the tests of all workspaces
+test-watch:
+  cargo watch -- just test

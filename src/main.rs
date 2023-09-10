@@ -12,6 +12,7 @@ use app::App;
 use leptos::{mount_to_body, view, warn};
 
 fn main() {
+    std::panic::set_hook(Box::new(console_error_panic_hook::hook));
     mount_to_body(|cx| {
         view! { cx,
             <App/>

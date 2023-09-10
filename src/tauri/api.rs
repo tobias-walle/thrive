@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
-use serde_wasm_bindgen::to_value;
-use shared::TableCell;
+use serde_wasm_bindgen::Serializer;
+use serde_with::serde_as;
+use shared::{Coordinate, State, TableCellWithCoordinates};
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
 #[wasm_bindgen]
@@ -9,13 +10,19 @@ extern "C" {
     async fn invoke(cmd: &str, args: JsValue) -> JsValue;
 }
 
+#[serde_as]
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 struct ComputeArgs {
-    cell: TableCell,
+    state: State,
+    coord: Coordinate,
 }
 
-pub async fn compute(cell: TableCell) -> TableCell {
-    let args = to_value(&ComputeArgs { cell }).unwrap();
+pub async fn compute(state: State, coord: Coordinate) -> Vec<TableCellWithCoordinates> {
+    let serializer = Serializer::json_compatible();
+    let args = ComputeArgs { state, coord }
+        .serialize(&serializer)
+        .expect("Failed to serialize args");
     let result = invoke("compute", args).await;
-    serde_wasm_bindgen::from_value(result).unwrap()
+    serde_wasm_bindgen::from_value(result).expect("Failed to convert result to struct")
 }

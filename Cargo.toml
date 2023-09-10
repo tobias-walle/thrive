@@ -3,6 +3,9 @@ name = "thrive-ui"
 version = "0.0.0"
 edition = "2021"
 
+[workspace]
+members = ["src-tauri", "src-shared"]
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
 leptos = { version = "0.4", features = ["csr"] }
@@ -12,6 +15,5 @@ wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
 wasm-bindgen-futures = "0.4"
 js-sys = "0.3"
 shared = { path = "./src-shared" }
-
-[workspace]
-members = ["src-tauri", "src-shared"]
+console_error_panic_hook = "0.1.7"
+serde_with = "3.3.0"
