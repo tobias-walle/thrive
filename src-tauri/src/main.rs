@@ -7,11 +7,11 @@
 
 mod compute;
 
-use shared::{Coordinate, State, TableCellWithCoordinates};
+use shared::{Coordinate, TableState, TableCellWithCoordinates};
 
 #[allow(clippy::needless_pass_by_value)]
 #[tauri::command]
-fn compute(state: State, coord: Coordinate) -> Vec<TableCellWithCoordinates> {
+fn compute(state: TableState, coord: Coordinate) -> Vec<TableCellWithCoordinates> {
     compute::compute(state, coord)
 }
 

@@ -1,4 +1,4 @@
-use shared::{Coordinate, State};
+use shared::{Coordinate, TableDimensions, TableState};
 
 use crate::components::TableCell;
 use crate::prelude::*;
@@ -11,7 +11,8 @@ pub fn Table(cx: Scope) -> impl IntoView {
             .flat_map(|row| (0..10).map(move |col| Coordinate { col, row }))
             .collect::<Vec<_>>(),
     );
-    let (state, set_state) = create_signal(cx, State::new());
+    let state = create_rw_signal(cx, TableState::new());
+    let dimensions = create_rw_signal(cx, TableDimensions::new());
 
     create_effect(cx, move |_| {
         log!("{:#?}", state.get());
@@ -27,7 +28,7 @@ pub fn Table(cx: Scope) -> impl IntoView {
                     <TableCell
                         coord=coord
                         state=state
-                        set_state=set_state
+                        dimensions=dimensions
                     />
                 }
             />

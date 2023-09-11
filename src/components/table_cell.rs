@@ -1,5 +1,6 @@
 use leptos::ev::Event;
-use shared::{Coordinate, State, TableCell as TableCellModel};
+use shared::{Coordinate, TableCell as TableCellModel, TableState};
+use shared::{FormatPixel, TableDimensions};
 
 use crate::prelude::*;
 use crate::tauri;
@@ -8,8 +9,8 @@ use crate::tauri;
 pub fn TableCell(
     cx: Scope,
     coord: Coordinate,
-    state: ReadSignal<State>,
-    set_state: WriteSignal<State>,
+    state: RwSignal<TableState>,
+    dimensions: RwSignal<TableDimensions>,
 ) -> impl IntoView {
     let (focused, set_focused) = create_signal(cx, false);
 
@@ -21,13 +22,12 @@ pub fn TableCell(
             text: event_target_value(event),
             ..cell.clone()
         };
-        set_state.update(|state| {
+        state.update(|state| {
             state.set_cell(coord, new_cell.clone());
         });
         spawn_local(async move {
-            let state = state.get_untracked();
-            let updated_cells = tauri::api::compute(state, coord).await;
-            set_state.update(|state| {
+            let updated_cells = tauri::api::compute(state.get_untracked(), coord).await;
+            state.update(|state| {
                 for cell in updated_cells {
                     state.set_cell(cell.coord, cell.cell);
                 }
@@ -38,11 +38,11 @@ pub fn TableCell(
     view! {
         cx,
         <div
-            class="absolute outline outline-black outline-[1px] flex justify-center items-center p-[2px]"
-            style:top=move || format!("{}px", coord.row * 30)
-            style:height=move || format!("{}px", 29)
-            style:left=move || format!("{}px", coord.col * 80)
-            style:width=move || format!("{}px", 79)
+            class="absolute outline outline-black outline-[1px] flex justify-center items-center font-mono"
+            style:top=move || (coord.row * dimensions.get().row_height).px()
+            style:height=move || (dimensions.get().row_height - dimensions.get().border_width).px()
+            style:left=move || (coord.col * dimensions.get().column_width).px()
+            style:width=move || (dimensions.get().column_width - dimensions.get().border_width).px()
             title=move || format!("{}|{}", coord.row, coord.col)
         >
             <input

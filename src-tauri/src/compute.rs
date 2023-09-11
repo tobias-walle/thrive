@@ -7,11 +7,11 @@ use pyo3::{
     types::{IntoPyDict, PyDict},
     PyCell, PyResult, Python,
 };
-use shared::{Coordinate, State, TableCell, TableCellWithCoordinates};
+use shared::{Coordinate, TableState, TableCell, TableCellWithCoordinates};
 
 #[pyclass]
 struct PythonApi {
-    state: State,
+    state: TableState,
 }
 
 #[pymethods]
@@ -25,7 +25,7 @@ impl PythonApi {
 }
 
 #[allow(clippy::needless_pass_by_value)]
-pub fn compute(state: State, coord: Coordinate) -> Vec<TableCellWithCoordinates> {
+pub fn compute(state: TableState, coord: Coordinate) -> Vec<TableCellWithCoordinates> {
     let cell = state.cell(&coord);
     let computed = match cell.get_formula() {
         Some(formula) => {
@@ -81,7 +81,7 @@ mod tests {
     #[test]
     fn compute_should_copy_text_if_no_formula_is_provided() {
         let coord = Coordinate::new(0, 0);
-        let state = State::from([TableCellWithCoordinates {
+        let state = TableState::from([TableCellWithCoordinates {
             coord,
             cell: TableCell {
                 text: "Hello World".into(),
@@ -106,7 +106,7 @@ mod tests {
     #[test]
     fn compute_should_solve_simple_formulas() {
         let coord = Coordinate::new(0, 0);
-        let state = State::from([TableCellWithCoordinates {
+        let state = TableState::from([TableCellWithCoordinates {
             coord,
             cell: TableCell {
                 text: "=(1+3)*3".into(),
@@ -133,7 +133,7 @@ mod tests {
         let coord_a1 = Coordinate::new(0, 0);
         let coord_b1 = Coordinate::new(1, 0);
         let coord_a2 = Coordinate::new(0, 1);
-        let state = State::from([
+        let state = TableState::from([
             TableCellWithCoordinates {
                 coord: coord_a1,
                 cell: TableCell {

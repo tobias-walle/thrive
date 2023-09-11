@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde_wasm_bindgen::Serializer;
 use serde_with::serde_as;
-use shared::{Coordinate, State, TableCellWithCoordinates};
+use shared::{Coordinate, TableState, TableCellWithCoordinates};
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
 #[wasm_bindgen]
@@ -14,11 +14,11 @@ extern "C" {
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct ComputeArgs {
-    state: State,
+    state: TableState,
     coord: Coordinate,
 }
 
-pub async fn compute(state: State, coord: Coordinate) -> Vec<TableCellWithCoordinates> {
+pub async fn compute(state: TableState, coord: Coordinate) -> Vec<TableCellWithCoordinates> {
     let serializer = Serializer::json_compatible();
     let args = ComputeArgs { state, coord }
         .serialize(&serializer)
