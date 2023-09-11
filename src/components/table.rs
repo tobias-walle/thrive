@@ -56,6 +56,8 @@ pub fn Table(cx: Scope) -> impl IntoView {
                         >
                             <input
                                 class="w-full h-full p-1 focus:outline focus:outline-cyan-500 focus:outline-[2px] rounded-none"
+                                spellcheck="false"
+                                autocomplete="false"
                                 prop:value=move || {
                                     match focused.get() {
                                         true => state.get().cell(&coord).text.clone(),
