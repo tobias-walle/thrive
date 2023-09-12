@@ -7,7 +7,7 @@ use pyo3::{
     types::{IntoPyDict, PyDict},
     PyCell, PyResult, Python,
 };
-use shared::{Coordinate, TableState, TableCell, TableCellWithCoordinates};
+use shared::{Coordinate, TableCell, TableCellWithCoordinates, TableState};
 
 #[pyclass]
 struct PythonApi {

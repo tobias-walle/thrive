@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde_wasm_bindgen::Serializer;
 use serde_with::serde_as;
-use shared::{Coordinate, TableState, TableCellWithCoordinates};
+use shared::{Coordinate, TableCellWithCoordinates, TableState};
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
 #[wasm_bindgen]

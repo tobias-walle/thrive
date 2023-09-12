@@ -7,7 +7,7 @@
 
 mod compute;
 
-use shared::{Coordinate, TableState, TableCellWithCoordinates};
+use shared::{Coordinate, TableCellWithCoordinates, TableState};
 
 #[allow(clippy::needless_pass_by_value)]
 #[tauri::command]

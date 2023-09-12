@@ -38,7 +38,7 @@ pub fn Cell(
     view! {
         cx,
         <div
-            class="absolute outline outline-black outline-[1px] flex justify-center items-center font-mono"
+            class="absolute flex justify-center items-center font-mono"
             style:top=move || (coord.row * dimensions.get().row_height).px()
             style:height=move || (dimensions.get().row_height - dimensions.get().border_width).px()
             style:left=move || (coord.col * dimensions.get().column_width).px()
