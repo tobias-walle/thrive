@@ -1,6 +1,6 @@
 use shared::{Coordinate, TableDimensions, TableState};
 
-use crate::components::TableCell;
+use crate::components::Cell;
 use crate::prelude::*;
 
 #[component]
@@ -25,7 +25,7 @@ pub fn Table(cx: Scope) -> impl IntoView {
                 key=|coord| *coord
                 view=move |cx, coord: Coordinate| view! {
                     cx,
-                    <TableCell
+                    <Cell
                         coord=coord
                         state=state
                         dimensions=dimensions

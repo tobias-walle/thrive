@@ -1,12 +1,12 @@
 use leptos::ev::Event;
-use shared::{Coordinate, TableCell as TableCellModel, TableState};
+use shared::{Coordinate, TableCell, TableState};
 use shared::{FormatPixel, TableDimensions};
 
 use crate::prelude::*;
 use crate::tauri;
 
 #[component]
-pub fn TableCell(
+pub fn Cell(
     cx: Scope,
     coord: Coordinate,
     state: RwSignal<TableState>,
@@ -18,7 +18,7 @@ pub fn TableCell(
 
     let update_cell_text = move |event: &Event| {
         let cell = cell.get_untracked();
-        let new_cell = TableCellModel {
+        let new_cell = TableCell {
             text: event_target_value(event),
             ..cell.clone()
         };
