@@ -39,10 +39,10 @@ pub fn Cell(
     let rect = move || {
         let d = dimensions.get();
         Rectangle {
-            top: coord.row * d.row_height + d.border_width,
-            height: d.row_height - d.border_width,
-            left: coord.col * d.column_width + d.border_width,
-            width: d.column_width - d.border_width,
+            top: coord.row * d.row_height,
+            height: d.row_height,
+            left: coord.col * d.column_width,
+            width: d.column_width,
         }
     };
 

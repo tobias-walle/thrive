@@ -15,7 +15,7 @@ pub fn Border(
         let d = dimensions.get();
         match direction {
             BorderDirection::Top => Rectangle {
-                top: coord.row * d.row_height,
+                top: coord.row * d.row_height - d.border_width,
                 height: d.border_width,
                 left: coord.col * d.column_width,
                 width: d.column_width,
@@ -23,7 +23,7 @@ pub fn Border(
             BorderDirection::Left => Rectangle {
                 top: coord.row * d.row_height,
                 height: d.row_height,
-                left: coord.col * d.column_width,
+                left: coord.col * d.column_width - d.border_width,
                 width: d.border_width,
             },
         }

@@ -13,3 +13,24 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
+
+.table-layout {
+  display: grid;
+  grid-template:
+    "r c" 24px
+    "r t" min-content
+    / min-content min-content;
+  align-items: start;
+}
+
+.table-layout-row-labels {
+  grid-area: r;
+}
+
+.table-layout-column-labels {
+  grid-area: c;
+}
+
+.table-layout-table {
+  grid-area: t;
+}
