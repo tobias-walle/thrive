@@ -5,6 +5,7 @@
 mod app;
 mod components;
 mod macros;
+mod models;
 mod prelude;
 mod tauri;
 

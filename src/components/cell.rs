@@ -1,6 +1,6 @@
+use crate::models::{FormatPixel, TableDimensions};
 use leptos::ev::Event;
 use shared::{Coordinate, TableCell, TableState};
-use shared::{FormatPixel, TableDimensions};
 
 use crate::prelude::*;
 use crate::tauri;

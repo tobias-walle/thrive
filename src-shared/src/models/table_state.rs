@@ -3,7 +3,7 @@ use std::{collections::HashMap, sync::OnceLock};
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 
-use crate::Coordinate;
+use crate::models::Coordinate;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Default)]
 pub struct TableCell {

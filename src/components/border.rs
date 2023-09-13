@@ -1,7 +1,6 @@
-use std::fmt::Display;
-
+use crate::models::{FormatPixel, TableDimensions};
 use shared::Coordinate;
-use shared::{FormatPixel, TableDimensions};
+use std::fmt::Display;
 
 use crate::prelude::*;
 

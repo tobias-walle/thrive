@@ -1,6 +1,7 @@
-use shared::{Coordinate, TableDimensions, TableState};
+use shared::{Coordinate, TableState};
 
 use crate::components::{Border, BorderDirection, Cell};
+use crate::models::TableDimensions;
 use crate::prelude::*;
 
 #[component]
