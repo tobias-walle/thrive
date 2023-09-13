@@ -1,3 +1,4 @@
+use crate::models::Rectangle;
 use crate::models::{FormatPixel, TableDimensions};
 use leptos::ev::Event;
 use shared::{Coordinate, TableCell, TableState};
@@ -35,14 +36,24 @@ pub fn Cell(
         });
     };
 
+    let rect = move || {
+        let d = dimensions.get();
+        Rectangle {
+            top: coord.row * d.row_height + d.border_width,
+            height: d.row_height - d.border_width,
+            left: coord.col * d.column_width + d.border_width,
+            width: d.column_width - d.border_width,
+        }
+    };
+
     view! {
         cx,
         <div
             class="absolute flex justify-center items-center font-mono"
-            style:top=move || (coord.row * dimensions.get().row_height).px()
-            style:height=move || (dimensions.get().row_height - dimensions.get().border_width).px()
-            style:left=move || (coord.col * dimensions.get().column_width).px()
-            style:width=move || (dimensions.get().column_width - dimensions.get().border_width).px()
+            style:top=move || rect().top.px()
+            style:height=move || rect().height.px()
+            style:left=move || rect().left.px()
+            style:width=move || rect().width.px()
             title=move || format!("{}|{}", coord.row, coord.col)
         >
             <input

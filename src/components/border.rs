@@ -1,4 +1,4 @@
-use crate::models::{FormatPixel, TableDimensions};
+use crate::models::{FormatPixel, Rectangle, TableDimensions};
 use shared::Coordinate;
 use std::fmt::Display;
 
@@ -15,7 +15,7 @@ pub fn Border(
         let d = dimensions.get();
         match direction {
             BorderDirection::Top => Rectangle {
-                top: coord.row * d.row_height - d.border_width,
+                top: coord.row * d.row_height,
                 height: d.border_width,
                 left: coord.col * d.column_width,
                 width: d.column_width,
@@ -23,7 +23,7 @@ pub fn Border(
             BorderDirection::Left => Rectangle {
                 top: coord.row * d.row_height,
                 height: d.row_height,
-                left: coord.col * d.column_width - d.border_width,
+                left: coord.col * d.column_width,
                 width: d.border_width,
             },
         }
@@ -56,12 +56,4 @@ impl Display for BorderDirection {
         };
         write!(f, "{s}")
     }
-}
-
-#[derive(Debug)]
-struct Rectangle {
-    top: i64,
-    height: i64,
-    left: i64,
-    width: i64,
 }

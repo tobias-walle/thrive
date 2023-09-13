@@ -6,7 +6,7 @@ use crate::prelude::*;
 
 #[component]
 pub fn Table(cx: Scope) -> impl IntoView {
-    let n_rows = 10;
+    let n_rows = 30;
     let n_cols = 10;
     let (coords, _set_coords) = create_signal(
         cx,
