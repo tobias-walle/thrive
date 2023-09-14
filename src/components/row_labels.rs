@@ -1,3 +1,5 @@
+use shared::Coordinate;
+
 use crate::models::{FormatPixel, TableDimensions};
 
 use crate::prelude::*;
@@ -31,7 +33,7 @@ pub fn RowLabels(cx: Scope, n_rows: i64, dimensions: RwSignal<TableDimensions>) 
                             "
                             style:height=move || dimensions.get().row_height.px()
                             style:width=move || dimensions.get().labels_width.px()
-                        >{row + 1}</div>
+                        >{Coordinate::format_row(row)}</div>
                     }
                 }
             />

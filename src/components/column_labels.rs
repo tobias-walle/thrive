@@ -1,3 +1,5 @@
+use shared::Coordinate;
+
 use crate::models::{FormatPixel, TableDimensions};
 
 use crate::prelude::*;
@@ -29,7 +31,7 @@ pub fn ColumnLabels(
                             "
                             style:height=move || dimensions.get().row_height.px()
                             style:width=move || dimensions.get().column_width.px()
-                        >{col + 1}</div>
+                        >{Coordinate::format_column(col)}</div>
                     }
                 }
             />
