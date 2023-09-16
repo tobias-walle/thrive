@@ -20,20 +20,20 @@
 .table-layout {
   display: grid;
   grid-template:
-    "r c" 24px
-    "r t" min-content
+    "row col" 24px
+    "row tab" min-content
     / min-content min-content;
   align-items: start;
 }
 
 .table-layout-row-labels {
-  grid-area: r;
+  grid-area: row;
 }
 
 .table-layout-column-labels {
-  grid-area: c;
+  grid-area: col;
 }
 
 .table-layout-table {
-  grid-area: t;
+  grid-area: tab;
 }
