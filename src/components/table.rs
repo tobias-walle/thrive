@@ -4,7 +4,7 @@ use crate::components::{
     Border, BorderDirection, Cell, CodeBar, ColumnLabels, IsCodeBarFocused, RowLabels,
 };
 use crate::models::{FocusedCoordinate, TableDimensions};
-use crate::{debug, prelude::*};
+use crate::prelude::*;
 
 #[component]
 pub fn Table(cx: Scope) -> impl IntoView {
