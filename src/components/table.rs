@@ -1,6 +1,8 @@
 use shared::{Coordinate, TableState};
 
-use crate::components::{Border, BorderDirection, Cell, CodeBar, ColumnLabels, RowLabels};
+use crate::components::{
+    Border, BorderDirection, Cell, CodeBar, ColumnLabels, IsCodeBarFocused, RowLabels,
+};
 use crate::models::{FocusedCoordinate, TableDimensions};
 use crate::{debug, prelude::*};
 
@@ -25,13 +27,13 @@ pub fn Table(cx: Scope) -> impl IntoView {
         create_signal::<FocusedCoordinate>(cx, FocusedCoordinate(None));
     provide_context(cx, (focused_coord, set_focused_coord));
 
-    create_effect(cx, move |_| {
-        debug!(focused_coord.get());
-    });
+    let (is_code_bar_focused, set_is_code_bar_focused) =
+        create_signal::<IsCodeBarFocused>(cx, IsCodeBarFocused(false));
+    provide_context(cx, (is_code_bar_focused, set_is_code_bar_focused));
 
-    create_effect(cx, move |_| {
-        log!("{:#?}", state.get());
-    });
+    // create_effect(cx, move |_| {
+    //     debug!(state.get());
+    // });
 
     view! { cx,
         <div class="flex flex-col h-[100vh]">

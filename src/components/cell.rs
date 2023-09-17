@@ -1,11 +1,12 @@
+use crate::components::IsCodeBarFocused;
 use crate::models::{FocusedCoordinate, FormatPixel, TableDimensions};
 use crate::models::{Rectangle, SignalPair};
-use leptos::ev::Event;
+use leptos::ev::{Event, MouseEvent};
 use leptos::html::Textarea;
 use shared::{Coordinate, TableCell, TableState};
 
-use crate::prelude::*;
 use crate::tauri;
+use crate::{debug, prelude::*};
 
 #[component]
 pub fn Cell(cx: Scope, coord: Coordinate) -> impl IntoView {
@@ -19,22 +20,33 @@ pub fn Cell(cx: Scope, coord: Coordinate) -> impl IntoView {
 
     let cell = create_memo(cx, move |_| state.get().cell(&coord).clone());
 
-    let update_cell_text = move |event: &Event| {
-        let cell = cell.get_untracked();
-        let new_cell = TableCell {
-            text: event_target_value(event),
-            ..cell.clone()
-        };
+    let recompute_cell = move |coord: Coordinate| {
+        spawn_local(async move {
+            let state = state.get_untracked();
+            let updated_cells = tauri::api::compute(state.clone(), coord).await;
+            debug!(&updated_cells);
+            set_state.update(|state| {
+                for updated_cell in updated_cells {
+                    match state.cell_mut(&updated_cell.coord) {
+                        Some(cell_mut) => cell_mut.computed = updated_cell.cell.computed,
+                        None => (),
+                    };
+                }
+            });
+        });
+    };
+
+    let update_cell = move |new_cell: TableCell| {
         set_state.update(|state| {
             state.set_cell(coord, new_cell.clone());
         });
-        spawn_local(async move {
-            let updated_cells = tauri::api::compute(state.get_untracked(), coord).await;
-            set_state.update(|state| {
-                for cell in updated_cells {
-                    state.set_cell(cell.coord, cell.cell);
-                }
-            });
+        recompute_cell(coord);
+    };
+
+    let update_cell_text = move |event: &Event| {
+        update_cell(TableCell {
+            text: event_target_value(event),
+            ..cell.get_untracked().clone()
         });
     };
 
@@ -57,6 +69,28 @@ pub fn Cell(cx: Scope, coord: Coordinate) -> impl IntoView {
         }
     });
 
+    let (is_code_bar_focused, _) =
+        use_context::<SignalPair<IsCodeBarFocused>>(cx).expect("Missing context");
+    let handle_cell_click = move |event: MouseEvent| {
+        if is_code_bar_focused.get().0 {
+            let focused_coord = focused_coord.get();
+            let Some(focused_coord) = focused_coord.coord() else { return };
+            set_state.update(|state| {
+                let focused_cell = state.cell(focused_coord).clone();
+                let text = focused_cell.text;
+                state.set_cell(
+                    *focused_coord,
+                    TableCell {
+                        text: format!(r#"{text}c("{coord}")"#),
+                        ..focused_cell
+                    },
+                );
+            });
+            recompute_cell(*focused_coord);
+            event.prevent_default();
+        }
+    };
+
     view! {
         cx,
         <div
@@ -66,7 +100,7 @@ pub fn Cell(cx: Scope, coord: Coordinate) -> impl IntoView {
             style:height=move || rect().height.px()
             style:left=move || rect().left.px()
             style:width=move || rect().width.px()
-            title=move || format!("{}|{}", coord.row, coord.col)
+            title=move || cell.get().computed
         >
             <textarea
                 ref=textarea_ref
@@ -81,6 +115,7 @@ pub fn Cell(cx: Scope, coord: Coordinate) -> impl IntoView {
                     }
                 }
                 on:input=move |event| update_cell_text(&event)
+                on:mousedown=handle_cell_click
                 on:focus=move |_| {
                     set_is_directly_focused.set(true);
                     set_focused_coord.set(FocusedCoordinate(Some(coord)));
