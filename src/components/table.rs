@@ -34,41 +34,43 @@ pub fn Table(cx: Scope) -> impl IntoView {
     });
 
     view! { cx,
-        <div class="table-layout">
+        <div class="flex flex-col h-[100vh]">
             <CodeBar/>
-            <ColumnLabels n_cols=n_cols/>
-            <RowLabels n_rows=n_rows/>
-            <div class="table-layout-table relative flex-1">
-                <For
-                    each=move || coords.get()
-                    key=|coord| *coord
-                    view=move |cx, coord: Coordinate| view! {
-                        cx,
-                        <Cell coord=coord/>
-                        <Border coord=coord direction=BorderDirection::Top/>
-                        <Border coord=coord direction=BorderDirection::Left/>
-                        // Render one additional horizontal border in last row
-                        <Show
-                            when=move || coord.row == n_rows - 1
-                            fallback=move |_| ()
-                        >
-                            <Border
-                                coord=Coordinate::new(coord.col, coord.row + 1)
-                                direction=BorderDirection::Top
-                            />
-                        </Show>
-                        // Render one additional vertical border in last column
-                        <Show
-                            when=move || coord.col == n_cols - 1
-                            fallback=move |_| ()
-                        >
-                            <Border
-                                coord=Coordinate::new(coord.col + 1, coord.row)
-                                direction=BorderDirection::Left
-                            />
-                        </Show>
-                    }
-                />
+            <div class="table-layout relative flex-1 overflow-scroll">
+                <ColumnLabels n_cols=n_cols/>
+                <RowLabels n_rows=n_rows/>
+                <div class="table-layout-table relative flex-1">
+                    <For
+                        each=move || coords.get()
+                        key=|coord| *coord
+                        view=move |cx, coord: Coordinate| view! {
+                            cx,
+                            <Cell coord=coord/>
+                            <Border coord=coord direction=BorderDirection::Top/>
+                            <Border coord=coord direction=BorderDirection::Left/>
+                            // Render one additional horizontal border in last row
+                            <Show
+                                when=move || coord.row == n_rows - 1
+                                fallback=move |_| ()
+                            >
+                                <Border
+                                    coord=Coordinate::new(coord.col, coord.row + 1)
+                                    direction=BorderDirection::Top
+                                />
+                            </Show>
+                            // Render one additional vertical border in last column
+                            <Show
+                                when=move || coord.col == n_cols - 1
+                                fallback=move |_| ()
+                            >
+                                <Border
+                                    coord=Coordinate::new(coord.col + 1, coord.row)
+                                    direction=BorderDirection::Left
+                                />
+                            </Show>
+                        }
+                    />
+                </div>
             </div>
         </div>
     }

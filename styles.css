@@ -1,5 +1,4 @@
 :root {
-  font-family: Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 16px;
   font-weight: 400;
@@ -20,15 +19,10 @@
 .table-layout {
   display: grid;
   grid-template:
-    "bar bar" min-content
     "row col" 24px
     "row tab" min-content
     / min-content 1fr;
   align-items: start;
-}
-
-.table-layout-code-bar {
-  grid-area: bar;
 }
 
 .table-layout-row-labels {
