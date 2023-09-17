@@ -1,8 +1,8 @@
 use shared::{Coordinate, TableState};
 
 use crate::components::{Border, BorderDirection, Cell, CodeBar, ColumnLabels, RowLabels};
-use crate::models::TableDimensions;
-use crate::prelude::*;
+use crate::models::{FocusedCoordinate, TableDimensions};
+use crate::{debug, prelude::*};
 
 #[component]
 pub fn Table(cx: Scope) -> impl IntoView {
@@ -20,6 +20,14 @@ pub fn Table(cx: Scope) -> impl IntoView {
 
     let (dimensions, set_dimensions) = create_signal(cx, TableDimensions::new());
     provide_context(cx, (dimensions, set_dimensions));
+
+    let (focused_coord, set_focused_coord) =
+        create_signal::<FocusedCoordinate>(cx, FocusedCoordinate(None));
+    provide_context(cx, (focused_coord, set_focused_coord));
+
+    create_effect(cx, move |_| {
+        debug!(focused_coord.get());
+    });
 
     create_effect(cx, move |_| {
         log!("{:#?}", state.get());
