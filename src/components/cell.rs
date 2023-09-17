@@ -1,5 +1,5 @@
-use crate::models::Rectangle;
 use crate::models::{FormatPixel, TableDimensions};
+use crate::models::{Rectangle, SignalPair};
 use leptos::ev::Event;
 use shared::{Coordinate, TableCell, TableState};
 
@@ -7,12 +7,9 @@ use crate::prelude::*;
 use crate::tauri;
 
 #[component]
-pub fn Cell(
-    cx: Scope,
-    coord: Coordinate,
-    state: RwSignal<TableState>,
-    dimensions: RwSignal<TableDimensions>,
-) -> impl IntoView {
+pub fn Cell(cx: Scope, coord: Coordinate) -> impl IntoView {
+    let (state, set_state) = use_context::<SignalPair<TableState>>(cx).expect("Missing context");
+    let (dimensions, _) = use_context::<SignalPair<TableDimensions>>(cx).expect("Missing context");
     let (focused, set_focused) = create_signal(cx, false);
 
     let cell = create_memo(cx, move |_| state.get().cell(&coord).clone());
@@ -23,12 +20,12 @@ pub fn Cell(
             text: event_target_value(event),
             ..cell.clone()
         };
-        state.update(|state| {
+        set_state.update(|state| {
             state.set_cell(coord, new_cell.clone());
         });
         spawn_local(async move {
             let updated_cells = tauri::api::compute(state.get_untracked(), coord).await;
-            state.update(|state| {
+            set_state.update(|state| {
                 for cell in updated_cells {
                     state.set_cell(cell.coord, cell.cell);
                 }

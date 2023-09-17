@@ -1,16 +1,13 @@
-use crate::models::{FormatPixel, Rectangle, TableDimensions};
+use crate::models::{FormatPixel, Rectangle, SignalPair, TableDimensions};
 use shared::Coordinate;
 use std::fmt::Display;
 
 use crate::prelude::*;
 
 #[component]
-pub fn Border(
-    cx: Scope,
-    direction: BorderDirection,
-    coord: Coordinate,
-    dimensions: RwSignal<TableDimensions>,
-) -> impl IntoView {
+pub fn Border(cx: Scope, direction: BorderDirection, coord: Coordinate) -> impl IntoView {
+    let (dimensions, _) = use_context::<SignalPair<TableDimensions>>(cx).expect("Missing context");
+
     let rect = move || {
         let d = dimensions.get();
         match direction {

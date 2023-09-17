@@ -4,7 +4,7 @@ use crate::prelude::*;
 pub fn CodeBar(cx: Scope) -> impl IntoView {
     view! {
         cx,
-        <div class="table-layout-code-bar flex p-2 w-[100vw]">
+        <div class="table-layout-code-bar flex p-2 w-[100vw] bg-slate-200 border-b border-black">
             <div class="flex-initial p-1 pr-2">𝑓</div>
             <textarea
                 rows=1
