@@ -57,7 +57,7 @@ pub fn Cell(
             title=move || format!("{}|{}", coord.row, coord.col)
         >
             <input
-                class="w-full h-full p-1 focus:outline focus:outline-cyan-500 focus:outline-[2px] rounded-none"
+                class="w-full h-full p-1 focus:outline-none rounded-none"
                 spellcheck="false"
                 autocomplete="false"
                 prop:value=move || {

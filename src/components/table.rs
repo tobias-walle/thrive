@@ -1,6 +1,6 @@
 use shared::{Coordinate, TableState};
 
-use crate::components::{Border, BorderDirection, Cell, ColumnLabels, RowLabels};
+use crate::components::{Border, BorderDirection, Cell, CodeBar, ColumnLabels, RowLabels};
 use crate::models::TableDimensions;
 use crate::prelude::*;
 
@@ -23,6 +23,7 @@ pub fn Table(cx: Scope) -> impl IntoView {
 
     view! { cx,
         <div class="table-layout">
+            <CodeBar/>
             <ColumnLabels
                 n_cols=n_cols
                 dimensions=dimensions

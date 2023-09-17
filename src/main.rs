@@ -1,6 +1,8 @@
 #![warn(clippy::pedantic)]
 #![allow(clippy::module_name_repetitions)]
 #![allow(clippy::match_bool)]
+#![allow(confusable_idents)]
+#![allow(uncommon_codepoints)]
 
 mod app;
 mod components;
